@@ -8,16 +8,8 @@
 
 int main()
 {
-	Editor::consoleMenu();
+	Editor::consoleMenu();  
 
-	int selection {0};
-	std::cin >> selection;
-
-	if (selection==1)
-	{
-		Editor::fileCreation();
-	}
-	
 
 	return 0;
 }
