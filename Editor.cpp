@@ -11,19 +11,21 @@ std::string clone;
 void Editor::consoleMenu()
 {
 	std::cout << "Main Menu \n";
-	std::cout << "------------- \n";
+	std::cout << "8=================D \n";
 	std::cout << "1. Create New File \n";
 	std::cout << "2. Open File \n";
-	std::cout << "3. Write to File \n";
-	std::cout << "4. Delete File \n";
-	std::cout << "5. Copy File \n";
-	std::cout << "6. Exit \n";
+	std::cout << "3. Really need to find that string? \n";
+	std::cout << "4. Count dem characters \n";
+	std::cout << "5. Write to file \n";
+	std::cout << "6. Delete File \n";
+	std::cout << "7. Copy File \n";
+	std::cout << "8. Exit \n";
 	std::cout << "Enter selection: \n";
 
 	std::cin >> selection;
 
 
-	switch (selection)  // Logic
+	switch (selection)  // Should be the main menu logic via a switch statement.
 	{
 	case 1:
 		Editor::fileCreation();
@@ -32,15 +34,21 @@ void Editor::consoleMenu()
 		Editor::fileOpen();
 		break;
 	case 3:
-		Editor::fileWrite();
+		Editor::fileSearchByString();
 		break;
 	case 4:
-		Editor::fileDelete();
+		Editor::fileCharacterCounter();
 		break;
 	case 5:
-		Editor::fileCopy();
+		Editor::fileWrite();
 		break;
 	case 6:
+		Editor::fileDelete();
+		break;
+	case 7:
+		Editor::fileCopy();
+		break;
+	case 8:
 		Editor::exitProgram();
 		break;
 	default:
@@ -76,34 +84,79 @@ void Editor::fileOpen()
 	}
 	myfile.close();
 
-	std::cout << "\nEnd of file.\n Would you like to search the file or return to main menu? ";
+	std::cout << "\nEnd of file.\n Insert 1 to return to main menu. ";
 	std::cin >> selection;
 	
-	if (selection==1)
-	{
-		Editor::fileSearchMenu();
-	}
-	else
-	{
-		Editor::consoleMenu();
-	}
-}
-
-void Editor::fileSearchMenu()
-{
-	std::cout << "1. Search by string \n";
-	std::cout << "2. Search by composition \n";
-	std::cout << "3. Return to main menu \n";
-
+	Editor::consoleMenu();
 	std::cin >> selection;
 }
 
 void Editor::fileSearchByString()
 {
+	std::string substring;
+
+	std::cout << "Enter name of the file you wanna search: ";
+	std::cin >> fileName;
+
+	std::cout << "Enter string you wanna search for: ";
+	std::cin >> substring;
+
+	std::fstream myfile;
+	myfile.open((fileName + ".txt").c_str());
+
+	std::string cont;
+	bool ans {0};
+	int line {1};
+
+	if (myfile.is_open())       
+	{
+		while (getline(myfile, cont))
+		{
+			if (cont.find(substring, 0) != std::string::npos) {
+				{
+					std::cout << "Aight, it do be here at  " << line << std::endl;
+					ans = 1;     
+				}
+				++line;
+			}
+			myfile.close(); 
+		}
+	}
+	else
+		std::cout << "I'd love to, but I can't open the file.";
+
+	if (!ans)   
+		std::cout << "Ayyy, it ain't here at all." << std::endl;
+
+	Editor::consoleMenu();
+	std::cin >> selection;
 }
 
-void Editor::fileSearchByChar()
+void Editor::fileCharacterCounter()
 {
+	std::cout << "What's the file you really need that count for? ";
+	std::cin >> fileName;
+
+	std::fstream myfile;
+	myfile.open((fileName + ".txt").c_str());
+
+	char ch;
+	int i, c = 0, sp = 0;
+	while (myfile)
+	{
+		myfile.get(ch);
+		i = ch;
+		if ((i > 63 && i < 91) || (i > 96 && i < 123))
+			c++;
+		else
+			if (ch == ' ')
+				sp++;
+	}
+	std::cout << "\n No. of Characters in a File : " << c << std::endl;
+	std::cout << "\n Space between the Words     : " << sp << std::endl;
+
+	Editor::consoleMenu();
+	std::cin >> selection;
 }
 
 void Editor::fileWrite()
@@ -114,7 +167,7 @@ void Editor::fileWrite()
 	std::cout << "Enter text to write: (Type END to finish)" << std::endl;
 	std::ofstream myfile;
 	myfile.open((fileName + ".txt").c_str(), std::ios::app);
-	std::cin.ignore(); // Ignores the buffer
+	std::cin.ignore(); // Should ignore the buffer. 
 
 	while (std::getline(std::cin, line))
 	{
